@@ -84,7 +84,7 @@ def process_exam(images):
         
         # Step 2: OCR
         ocr_engine = OCREngine(engine='tesseract')
-        ocr_lines = ocr_engine.extract_text(processed_img)
+        ocr_lines = ocr_engine.extract_lines(processed_img)
         
         if len(ocr_lines) == 0:
             return "⚠️ No text detected in images. Try clearer images.", "{}", None
@@ -139,29 +139,7 @@ def process_exam(images):
 def create_demo():
     """Create Gradio interface."""
     
-    # Custom CSS
-    css = """
-    .gradio-container {
-        font-family: 'Inter', sans-serif !important;
-    }
-    #title {
-        text-align: center;
-        font-size: 2.5em;
-        font-weight: bold;
-        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin-bottom: 0.5em;
-    }
-    #subtitle {
-        text-align: center;
-        font-size: 1.2em;
-        color: #666;
-        margin-bottom: 2em;
-    }
-    """
-    
-    with gr.Blocks(css=css, theme=gr.themes.Soft()) as demo:
+    with gr.Blocks() as demo:
         gr.HTML('<h1 id="title">🖊️ OCR & Question-Answer Segmentation</h1>')
         gr.HTML('<p id="subtitle">Upload handwritten exam images to automatically extract and separate questions from answers</p>')
         
@@ -205,8 +183,7 @@ def create_demo():
                         text_output = gr.Textbox(
                             label="Results",
                             lines=20,
-                            max_lines=30,
-                            show_copy_button=True
+                            max_lines=30
                         )
                     
                     with gr.Tab("{ } JSON Output"):

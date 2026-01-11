@@ -49,7 +49,7 @@ def process_document(image_paths, model_path, ocr_engine='paddleocr',
     
     # Step 2: OCR
     print("\n[2/5] Running OCR...")
-    ocr = OCREngine(engine=ocr_engine, lang='en')
+    ocr = OCREngine(engine=ocr_engine, lang='eng')
     lines = ocr.extract_lines(processed_image)
     print(f"  ✓ Extracted {len(lines)} text lines")
     

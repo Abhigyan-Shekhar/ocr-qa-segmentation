@@ -21,7 +21,7 @@ class OCRLine:
 class OCREngine:
     """OCR engine wrapper supporting multiple backends."""
     
-    def __init__(self, engine: str = 'paddleocr', lang: str = 'en'):
+    def __init__(self, engine: str = 'paddleocr', lang: str = 'eng'):
         """
         Initialize OCR engine.
         

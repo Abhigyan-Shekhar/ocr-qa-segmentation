@@ -1,0 +1,27 @@
+# Core Dependencies
+numpy>=1.21.0
+opencv-python>=4.5.0
+pillow>=9.0.0
+
+# OCR Engines
+# Note: PaddleOCR requires Python <3.13. If installation fails, use Tesseract instead.
+# paddleocr>=2.6.0
+# paddlepaddle>=2.4.0
+pytesseract>=0.3.10
+
+# Machine Learning
+scikit-learn>=1.0.0
+sklearn-crfsuite>=0.3.6
+scipy>=1.7.0
+
+# Data Processing
+python-Levenshtein>=0.12.2
+
+# Utilities
+tqdm>=4.62.0
+matplotlib>=3.5.0
+seaborn>=0.11.0
+
+# Development & Demo
+jupyter>=1.0.0
+ipywidgets>=7.6.0

@@ -25,3 +25,4 @@ seaborn>=0.11.0
 # Development & Demo
 jupyter>=1.0.0
 ipywidgets>=7.6.0
+gradio>=4.0.0

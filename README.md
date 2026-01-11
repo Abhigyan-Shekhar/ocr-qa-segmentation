@@ -65,6 +65,24 @@ python scripts/inference.py \
     --print-text
 ```
 
+### 🌐 Web Demo (NEW!)
+
+Launch an interactive web interface:
+
+```bash
+python app.py
+```
+
+Then open **http://localhost:7860** in your browser.
+
+**Features:**
+- 📤 Drag & drop exam images
+- ⚡ Real-time Q&A extraction
+- 📊 Multi-tab output (Text, JSON, Processed Image)
+- 🎨 Beautiful, modern UI
+
+**Tip:** Set `share=True` in `app.py` to get a public URL you can share with anyone!
+
 ---
 
 ## 🏗️ Architecture

@@ -78,9 +78,9 @@ def process_exam(images):
                 img.save(temp_file.name)
                 temp_paths.append(temp_file.name)
         
-        # Step 1: Preprocess
+        # Step 1: Preprocess with handwriting optimization
         preprocessor = ImagePreprocessor(target_width=1200, enable_deskew=True)
-        processed_img = preprocessor.process(temp_paths)
+        processed_img = preprocessor.process(temp_paths, handwriting_mode=True)
         
         # Step 2: OCR
         # Try PaddleOCR first (better for handwriting), fallback to Tesseract

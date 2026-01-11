@@ -106,12 +106,46 @@ class ImagePreprocessor:
         
         return image
     
-    def binarize(self, image: np.ndarray) -> np.ndarray:
+    def enhance_handwriting(self, image: np.ndarray) -> np.ndarray:
         """
-        Apply adaptive thresholding for binarization.
+        Enhance image specifically for handwriting OCR.
+        
+        Uses CLAHE for contrast + bilateral filtering to preserve edges.
         
         Args:
             image: Input image
+            
+        Returns:
+            Enhanced image optimized for handwriting
+        """
+        # Convert to grayscale if needed
+        if len(image.shape) == 3:
+            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        else:
+            gray = image.copy()
+        
+        # Apply CLAHE (Contrast Limited Adaptive Histogram Equalization)
+        clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+        enhanced = clahe.apply(gray)
+        
+        # Bilateral filtering - removes noise while preserving edges
+        filtered = cv2.bilateralFilter(enhanced, d=9, sigmaColor=75, sigmaSpace=75)
+        
+        # Sharpen slightly to make strokes clearer
+        kernel = np.array([[-1, -1, -1], 
+                          [-1,  9, -1],
+                          [-1, -1, -1]])
+        sharpened = cv2.filter2D(filtered, -1, kernel)
+        
+        return sharpened
+    
+    def binarize(self, image: np.ndarray, for_handwriting: bool = True) -> np.ndarray:
+        """
+        Apply adaptive thresholding optimized for handwriting.
+        
+        Args:
+            image: Input image
+            for_handwriting: Use handwriting-optimized parameters
             
         Returns:
             Binarized image
@@ -122,32 +156,46 @@ class ImagePreprocessor:
         else:
             gray = image.copy()
         
-        # Apply adaptive thresholding
-        binary = cv2.adaptiveThreshold(
-            gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
-            cv2.THRESH_BINARY, 11, 2
-        )
+        if for_handwriting:
+            # Larger block size for handwriting (captures more context)
+            binary = cv2.adaptiveThreshold(
+                gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+                cv2.THRESH_BINARY, 
+                blockSize=15,  # Increased from 11 for better handwriting context
+                C=10           # Increased from 2 for better contrast
+            )
+        else:
+            # Original parameters for typed text
+            binary = cv2.adaptiveThreshold(
+                gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+                cv2.THRESH_BINARY, 11, 2
+            )
         
         return binary
     
-    def denoise(self, image: np.ndarray) -> np.ndarray:
+    def denoise(self, image: np.ndarray, preserve_detail: bool = True) -> np.ndarray:
         """
-        Remove noise using morphological operations and filtering.
+        Remove noise while optionally preserving handwriting details.
         
         Args:
             image: Input image
+            preserve_detail: If True, use gentle denoising for handwriting
             
         Returns:
             Denoised image
         """
-        # Apply median filtering
-        denoised = cv2.medianBlur(image, 3)
-        
-        # Apply morphological opening to remove small noise
-        kernel = np.ones((2, 2), np.uint8)
-        denoised = cv2.morphologyEx(denoised, cv2.MORPH_OPEN, kernel)
-        
-        return denoised
+        if preserve_detail:
+            # Gentle denoising for handwriting - preserves fine strokes
+            denoised = cv2.fastNlMeansDenoising(image, None, h=10, 
+                                               templateWindowSize=7, 
+                                               searchWindowSize=21)
+            return denoised
+        else:
+            # Original aggressive denoising for typed text
+            denoised = cv2.medianBlur(image, 3)
+            kernel = np.ones((2, 2), np.uint8)
+            denoised = cv2.morphologyEx(denoised, cv2.MORPH_OPEN, kernel)
+            return denoised
     
     def stitch_images(self, images: List[np.ndarray]) -> np.ndarray:
         """
@@ -183,12 +231,14 @@ class ImagePreprocessor:
         return stitched
     
     def process(self, image_paths: List[Union[str, Path]], 
+                handwriting_mode: bool = True,
                 return_intermediate: bool = False) -> Union[np.ndarray, Tuple]:
         """
         Complete preprocessing pipeline.
         
         Args:
             image_paths: List of image file paths
+            handwriting_mode: Optimize for handwriting recognition (default True)
             return_intermediate: Whether to return intermediate results
             
         Returns:
@@ -223,14 +273,23 @@ class ImagePreprocessor:
         else:
             gray = stitched
         
-        # Denoise
-        denoised = self.denoise(gray)
+        # Apply handwriting enhancement if enabled
+        if handwriting_mode:
+            enhanced = self.enhance_handwriting(gray)
+            if return_intermediate:
+                intermediate['enhanced'] = enhanced.copy()
+            
+            # Gentle denoising to preserve handwriting details
+            denoised = self.denoise(enhanced, preserve_detail=True)
+        else:
+            # Standard aggressive denoising for typed text
+            denoised = self.denoise(gray, preserve_detail=False)
+        
         if return_intermediate:
             intermediate['denoised'] = denoised.copy()
         
-        # Binarize (optional - OCR engines handle this internally, 
-        # but can help with very poor quality images)
-        # For now, we'll return grayscale for better OCR compatibility
+        # Return enhanced grayscale for better OCR compatibility
+        # (OCR engines handle binarization internally with better algorithms)
         final = denoised
         
         if return_intermediate:

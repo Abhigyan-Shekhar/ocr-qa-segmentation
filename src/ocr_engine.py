@@ -44,7 +44,11 @@ class OCREngine:
                     use_angle_cls=True,
                     lang=self.lang,
                     show_log=False,
-                    use_gpu=False
+                    use_gpu=False,
+                    # Handwriting-specific optimizations
+                    det_limit_side_len=1280,  # Higher resolution for better detection
+                    rec_batch_num=6,          # Process more text lines at once
+                    drop_score=0.3,           # Lower threshold to catch faint handwriting
                 )
             except ImportError:
                 raise ImportError(

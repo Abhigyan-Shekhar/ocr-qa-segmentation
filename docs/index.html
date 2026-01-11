@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCR Q&A Segmentation Gallery</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo">
+                    <span class="icon">🖊️</span>
+                    OCR Q&A Gallery
+                </h1>
+                <p class="subtitle">Intelligent Handwritten Exam Digitization</p>
+            </div>
+            
+            <!-- Search Bar -->
+            <div class="search-container">
+                <div class="search-wrapper">
+                    <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search by question, answer, or confidence score...">
+                </div>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="filter-tabs">
+                <button class="tab active" data-filter="all">All Results</button>
+                <button class="tab" data-filter="high">High Confidence</button>
+                <button class="tab" data-filter="medium">Medium Confidence</button>
+                <button class="tab" data-filter="low">Needs Review</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Gallery -->
+    <main class="main">
+        <div class="container">
+            <div class="gallery-info">
+                <span id="resultCount">Loading...</span>
+                <button id="toggleView" class="view-toggle">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                    Grid View
+                </button>
+            </div>
+
+            <div id="gallery" class="gallery">
+                <!-- Gallery items will be inserted here by JavaScript -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Lightbox Modal -->
+    <div id="lightbox" class="lightbox">
+        <div class="lightbox-overlay"></div>
+        <div class="lightbox-content">
+            <button class="lightbox-close">&times;</button>
+            
+            <div class="lightbox-main">
+                <!-- Image Section -->
+                <div class="lightbox-image-section">
+                    <img id="lightboxImage" src="" alt="Document" class="lightbox-image">
+                    <div class="image-controls">
+                        <button class="control-btn" id="zoomIn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <path d="m21 21-4.35-4.35"></path>
+                                <line x1="11" y1="8" x2="11" y2="14"></line>
+                                <line x1="8" y1="11" x2="14" y2="11"></line>
+                            </svg>
+                        </button>
+                        <button class="control-btn" id="zoomOut">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <path d="m21 21-4.35-4.35"></path>
+                                <line x1="8" y1="11" x2="14" y2="11"></line>
+                            </svg>
+                        </button>
+                        <button class="control-btn" id="resetZoom">Reset</button>
+                    </div>
+                </div>
+
+                <!-- Details Section -->
+                <div class="lightbox-details">
+                    <div class="details-header">
+                        <h2 id="lightboxTitle">Document Details</h2>
+                        <span id="lightboxConfidence" class="confidence-badge">95%</span>
+                    </div>
+
+                    <div class="details-content">
+                        <!-- Q&A Pairs -->
+                        <div id="qaContainer" class="qa-container">
+                            <!-- Q&A items will be inserted here -->
+                        </div>
+
+                        <!-- Metadata -->
+                        <div class="metadata">
+                            <h3>Metadata</h3>
+                            <div class="metadata-grid">
+                                <div class="metadata-item">
+                                    <span class="metadata-label">Document ID:</span>
+                                    <span id="metaDocId" class="metadata-value">-</span>
+                                </div>
+                                <div class="metadata-item">
+                                    <span class="metadata-label">Pages:</span>
+                                    <span id="metaPages" class="metadata-value">-</span>
+                                </div>
+                                <div class="metadata-item">
+                                    <span class="metadata-label">OCR Engine:</span>
+                                    <span id="metaEngine" class="metadata-value">-</span>
+                                </div>
+                                <div class="metadata-item">
+                                    <span class="metadata-label">Processing Time:</span>
+                                    <span id="metaTime" class="metadata-value">-</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="action-buttons">
+                            <button class="btn btn-primary" id="downloadJson">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="7 10 12 15 17 10"></polyline>
+                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                </svg>
+                                Download JSON
+                            </button>
+                            <button class="btn btn-secondary" id="copyText">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                </svg>
+                                Copy Text
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Arrows -->
+            <button class="nav-arrow nav-prev" id="prevImage">&larr;</button>
+            <button class="nav-arrow nav-next" id="nextImage">&rarr;</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>Built with ❤️ using Classical Machine Learning | <a href="https://github.com/Abhigyan-Shekhar/ocr-qa-segmentation" target="_blank">View on GitHub</a></p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>

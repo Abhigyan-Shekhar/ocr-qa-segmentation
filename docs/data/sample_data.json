@@ -1,0 +1,40 @@
+[
+    {
+        "id": 1,
+        "image": "images/sample1.jpg",
+        "title": "Sample Exam - Physics",
+        "confidence": 0.95,
+        "pages": 2,
+        "engine": "Tesseract LSTM",
+        "processingTime": "1.2s",
+        "qaItems": [
+            {
+                "question": "Q1. State Newton's first law of motion and give an example.",
+                "answer": "Newton's first law states that an object at rest stays at rest and an object in motion stays in motion with the same speed and direction unless acted upon by an unbalanced force. Example: A book on a table remains at rest until someone picks it up."
+            },
+            {
+                "question": "Q2. Calculate the force required to accelerate a 5kg mass at 2m/s².",
+                "answer": "Using F = ma, Force = 5 kg × 2 m/s² = 10 N"
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "image": "images/sample2.jpg",
+        "title": "Sample Exam - Biology",
+        "confidence": 0.88,
+        "pages": 1,
+        "engine": "PaddleOCR",
+        "processingTime": "0.9s",
+        "qaItems": [
+            {
+                "question": "Q1. What is photosynthesis?",
+                "answer": "Photosynthesis is the process by which green plants use sunlight to synthesize nutrients from carbon dioxide and water. It involves the green pigment chlorophyll and generates oxygen as a by-product."
+            },
+            {
+                "question": "Q2. Name the three types of blood cells.",
+                "answer": "The three types of blood cells are: 1) Red blood cells (erythrocytes) - carry oxygen, 2) White blood cells (leukocytes) - fight infection, and 3) Platelets (thrombocytes) - help with clotting."
+            }
+        ]
+    }
+]

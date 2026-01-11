@@ -83,7 +83,12 @@ def process_exam(images):
         processed_img = preprocessor.process(temp_paths)
         
         # Step 2: OCR
-        ocr_engine = OCREngine(engine='tesseract')
+        # Try PaddleOCR first (better for handwriting), fallback to Tesseract
+        try:
+            ocr_engine = OCREngine(engine='paddleocr')
+        except ImportError:
+            print("⚠️ PaddleOCR not available, falling back to Tesseract")
+            ocr_engine = OCREngine(engine='tesseract')
         ocr_lines = ocr_engine.extract_lines(processed_img)
         
         if len(ocr_lines) == 0:

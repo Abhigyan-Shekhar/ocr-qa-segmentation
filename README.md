@@ -25,12 +25,18 @@ A production-ready system for **extracting and segmenting questions from answers
 
 ### Installation
 
+> [!IMPORTANT]
+> **Python Version Requirement**: PaddleOCR requires Python < 3.13. If you have Python 3.14+, see [Troubleshooting](#troubleshooting) below.
+
 ```bash
 # Clone the repository
 git clone https://github.com/Abhigyan-Shekhar/ocr-qa-segmentation.git
 cd ocr-qa-segmentation
 
-# Create virtual environment and install dependencies
+# Automated setup (recommended)
+./setup.sh
+
+# OR manual setup
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
@@ -216,10 +222,11 @@ python scripts/inference.py \
 
 ### OCR Engine Options
 
-- **Tesseract** (Default): Broad compatibility, works with Python 3.8+
-- **PaddleOCR** (Recommended): Better handwriting recognition, requires Python <3.13
+- **PaddleOCR** (Default): Superior handwriting recognition, requires Python <3.13
+- **Tesseract** (Fallback): Broad compatibility, works better with typed text
 
-To use PaddleOCR, uncomment it in `requirements.txt` and change `ocr_engine.py` backend.
+The system automatically uses PaddleOCR if available, otherwise falls back to Tesseract.
+To force Tesseract, set `engine='tesseract'` in `OCREngine()`.
 
 ### Performance
 
@@ -274,6 +281,39 @@ This tests:
 1. CRF training on synthetic data
 2. Feature extraction accuracy
 3. QA pair extraction logic
+
+---
+
+## 🔧 Troubleshooting
+
+### Python 3.14+ Compatibility
+
+If you have Python 3.14 or newer, PaddleOCR won't install. You have two options:
+
+**Option 1: Install Python 3.12** (Recommended for full handwriting support)
+
+```bash
+# macOS
+brew install python@3.12
+python3.12 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+**Option 2: Use Tesseract Only** (Works but lower handwriting accuracy)
+
+The system automatically falls back to Tesseract if PaddleOCR is unavailable. Just run:
+
+```bash
+pip install pytesseract opencv-python pillow numpy
+python app.py  # Will use Tesseract automatically
+```
+
+### Other Issues
+
+- **Import Error**: Make sure virtual environment is activated: `source venv/bin/activate`
+- **Tesseract not found**: Install Tesseract: `brew install tesseract` (macOS)
+- **GPU errors**: PaddleOCR is configured for CPU mode, no GPU needed
 
 ---
 

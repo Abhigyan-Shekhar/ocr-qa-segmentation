@@ -7,7 +7,7 @@ Extracts visual and textual features from OCR lines without using LLMs.
 import re
 import numpy as np
 from typing import List, Dict, Optional
-from ocr_engine import OCRLine
+from .ocr_engine import OCRLine
 import Levenshtein
 
 

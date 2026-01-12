@@ -89,6 +89,54 @@ Then open **http://localhost:7860** in your browser.
 
 **Tip:** Set `share=True` in `app.py` to get a public URL you can share with anyone!
 
+### 📸 Screenshots
+
+**Upload Interface**
+
+![Web Interface](docs/images/web_interface.png)
+
+*Clean, modern interface for uploading images and extracting Q&A pairs*
+
+---
+
+**Sample Input**
+
+![Sample Input](docs/images/sample_input.png)
+
+*Example riddle questions with answers - perfect for testing the system*
+
+---
+
+**Extraction Results**
+
+![Extraction Complete](docs/images/extraction_complete.png)
+
+*92% confidence extraction showing 6 Q&A pairs from 74 words*
+
+---
+
+**Q&A Pairs View**
+
+![Q&A Pairs](docs/images/qa_pairs_view.png)
+
+*Beautifully formatted extracted questions and answers with proper separation*
+
+---
+
+**Raw Text Output**
+
+![Raw Text View](docs/images/raw_text_view.png)
+
+*Raw extracted text showing all detected questions and answers*
+
+---
+
+**JSON Export**
+
+![JSON Export](docs/images/json_export_view.png)
+
+*Structured JSON output ready for integration with other systems*
+
 ---
 
 ## 🏗️ Architecture

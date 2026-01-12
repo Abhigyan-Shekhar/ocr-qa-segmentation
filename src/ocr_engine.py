@@ -120,7 +120,7 @@ class OCREngine:
     
     def extract_lines_tesseract(self, image: np.ndarray) -> List[OCRLine]:
         """
-        Extract text lines using Tesseract.
+        Extract text lines using Tesseract with handwriting-optimized config.
         
         Args:
             image: Input image
@@ -137,14 +137,30 @@ class OCREngine:
         else:
             pil_image = Image.fromarray(image[:, :, ::-1])  # BGR to RGB
         
-        # Get detailed data
-        data = pytesseract.image_to_data(pil_image, lang=self.lang, 
-                                        output_type=pytesseract.Output.DICT)
+        # Tesseract config optimized for handwriting:
+        # PSM 6 = Assume uniform block of text (good for handwritten pages)
+        # --oem 1 = Use LSTM engine (better for handwriting than legacy)
+        # --dpi 300 = Assume high DPI for better recognition
+        custom_config = r'--oem 1 --psm 6 --dpi 300'
         
-        # Group by line
+        # Get detailed data with handwriting-optimized config
+        data = pytesseract.image_to_data(
+            pil_image, 
+            lang=self.lang,
+            config=custom_config,
+            output_type=pytesseract.Output.DICT
+        )
+        
+        # Group by line (only include words with reasonable confidence)
         lines_dict = {}
+        MIN_CONFIDENCE = 60  # Minimum confidence threshold (out of 100)
+        
         for i in range(len(data['text'])):
             if data['text'][i].strip() == '':
+                continue
+            
+            # Skip low confidence detections to improve quality
+            if data['conf'][i] < MIN_CONFIDENCE:
                 continue
             
             block_num = data['block_num'][i]

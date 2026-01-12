@@ -110,7 +110,7 @@ class ImagePreprocessor:
         """
         Enhance image specifically for handwriting OCR.
         
-        Uses CLAHE for contrast + bilateral filtering to preserve edges.
+        Uses stronger CLAHE + morphological operations + sharpening.
         
         Args:
             image: Input image
@@ -124,18 +124,22 @@ class ImagePreprocessor:
         else:
             gray = image.copy()
         
-        # Apply CLAHE (Contrast Limited Adaptive Histogram Equalization)
-        clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+        # Apply stronger CLAHE for better contrast on faint handwriting
+        clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
         enhanced = clahe.apply(gray)
         
         # Bilateral filtering - removes noise while preserving edges
         filtered = cv2.bilateralFilter(enhanced, d=9, sigmaColor=75, sigmaSpace=75)
         
-        # Sharpen slightly to make strokes clearer
+        # Morphological closing to connect broken strokes (common in handwriting)
+        kernel_close = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2, 2))
+        closed = cv2.morphologyEx(filtered, cv2.MORPH_CLOSE, kernel_close)
+        
+        # Stronger sharpening for better character definition
         kernel = np.array([[-1, -1, -1], 
-                          [-1,  9, -1],
+                          [-1,  11, -1],  # Increased center value from 9 to 11
                           [-1, -1, -1]])
-        sharpened = cv2.filter2D(filtered, -1, kernel)
+        sharpened = cv2.filter2D(closed, -1, kernel)
         
         return sharpened
     

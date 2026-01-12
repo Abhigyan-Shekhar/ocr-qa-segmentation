@@ -150,7 +150,7 @@ def create_demo():
         
         with gr.Row():
             with gr.Column(scale=1):
-                gr.Markdown("### 📤 Upload Exam Images")
+                gr.Markdown("### 📤 Upload Images")
                 gr.Markdown("Upload one or more pages (supports multi-page exams)")
                 
                 image_input = gr.File(
@@ -246,7 +246,7 @@ if __name__ == "__main__":
     print("\n🚀 Launching web demo...")
     print("📍 Local URL: http://127.0.0.1:7860")
     print("📍 Share URL will be generated if share=True")
-    print("\n💡 Tip: Upload exam images or click 'Extract Q&A' for a demo\n")
+    print("\n💡 Tip: Upload images or click 'Extract Q&A' for a demo\n")
     
     demo.launch(
         share=False,  # Set to True to get public URL

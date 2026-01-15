@@ -1,0 +1,21 @@
+{
+    "model_name": "IAM Handwriting HTR Model",
+    "architecture": "CRNN + CTC",
+    "framework": "TensorFlow/Keras",
+    "training_date": "2026-01-15",
+    "dataset": "IAM Handwriting Database",
+    "image_dimensions": {
+        "height": 32,
+        "width": 128,
+        "channels": 1
+    },
+    "character_set": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,!?'-():;\"/ ",
+    "num_classes": 76,
+    "model_file": "htr_model.keras",
+    "preprocessing": {
+        "resize_height": 32,
+        "resize_width": 128,
+        "normalization": "invert and scale to [0, 1]",
+        "padding": "right-pad with white (255)"
+    }
+}

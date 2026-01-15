@@ -11,6 +11,15 @@ venv/
 # OS
 .DS_Store
 
+# Large model files (download separately)
+models/*.keras
+models/*.h5
+models/*.weights.h5
+
+# Training outputs
+*.tar.gz
+experiments/
+
 # Models & Data
 models/*.pkl
 data/*.json

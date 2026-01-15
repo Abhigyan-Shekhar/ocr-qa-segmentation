@@ -89,6 +89,51 @@ Then open **http://localhost:7860** in your browser.
 
 **Tip:** Set `share=True` in `app.py` to get a public URL you can share with anyone!
 
+---
+
+## 📚 OCR Exploration & Handwriting Recognition
+
+This project includes extensive exploration of handwritten text recognition approaches. While the web demo uses Tesseract.js for typed text, we also explored custom deep learning models for cursive handwriting.
+
+### What We Explored
+
+**6 Different Approaches Tested:**
+
+1. **Custom CRNN+CTC Model** - Trained from scratch on IAM Handwriting Database (Kaggle)
+2. **Pre-trained TensorFlow 1.x Model** - Explored arshjot's HTR repository
+3. **EasyOCR** - Tested on handwritten pages
+4. **TrOCR** - Microsoft's transformer-based OCR
+5. **Automatic Line Segmentation** - Horizontal projection method
+6. **Web App with Tesseract.js** - Production-ready for typed text
+
+### Documentation
+
+📖 **[Complete Exploration Document](EXPLORATION.md)** - Detailed documentation of all approaches, technical challenges, solutions, and learnings
+
+### Key Learnings
+
+- ✅ Successfully trained CRNN model on IAM dataset (50 epochs, 31.4MB model)
+- ✅ Solved 6 technical challenges during training (CTC dimensions, Keras 3 compatibility, etc.)
+- ✅ Automatic line segmentation works perfectly using horizontal projection
+- ⚠️ Heavy cursive handwriting remains challenging for all tested models
+- ✅ Tesseract.js (web app) works excellently for typed text and screenshots
+
+### Notebooks & Models
+
+**Training:**
+- `notebooks/train_htr_tensorflow.ipynb` - Kaggle notebook for CRNN training
+- `models/config.json` - Model configuration and metadata
+
+**Inference:**
+- `notebooks/htr_trocr_colab.ipynb` - Google Colab notebook with TrOCR
+- `scripts/inference_htr.py` - Local inference script for trained model
+
+**Web Demo for Typed Text:**
+- **Live:** https://abhigyan-shekhar.github.io/ocr-qa-segmentation/
+- Works perfectly for screenshots, typed documents, and clear print
+
+---
+
 ### 📸 Screenshots
 
 **Upload Interface**

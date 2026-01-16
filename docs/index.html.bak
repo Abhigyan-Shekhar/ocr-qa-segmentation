@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCR Q&A Extractor - Upload & Extract</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js'></script>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo">
+                    <span class="icon">🖊️</span>
+                    OCR Q&A Extractor
+                </h1>
+                <p class="subtitle">Upload text • Get answers • Powered by classical ML</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Upload Section -->
+            <section id="uploadSection" class="upload-section">
+                <div class="upload-card">
+                    <div class="upload-icon">
+                        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                    </div>
+                    <h2>Upload Your Image</h2>
+                    <p class="upload-description">Drag & drop or click to browse</p>
+
+                    <div class="dropzone" id="dropzone">
+                        <input type="file" id="fileInput" accept="image/*" multiple hidden>
+                        <div class="dropzone-content">
+                            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <polyline points="21 15 16 10 5 21"></polyline>
+                            </svg>
+                            <p class="dropzone-text">Drop images here or <span class="browse-btn">browse</span></p>
+                            <p class="dropzone-hint">Supports: JPG, PNG, PDF (max 10MB)</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-list">
+                        <div class="feature-item">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            <span>Automatic Q&A Detection</span>
+                        </div>
+                        <div class="feature-item">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            <span>Multi-page Support</span>
+                        </div>
+                        <div class="feature-item">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            <span>Export to JSON/Text</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Processing Section -->
+            <section id="processingSection" class="processing-section" style="display: none;">
+                <div class="processing-card">
+                    <div class="spinner"></div>
+                    <h2 id="processingStatus">Processing your image...</h2>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressBar"></div>
+                    </div>
+                    <p id="processingText" class="processing-detail">Initializing OCR engine...</p>
+                </div>
+            </section>
+
+            <!-- Results Section -->
+            <section id="resultsSection" class="results-section" style="display: none;">
+                <div class="results-header">
+                    <h2>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        Extraction Complete
+                    </h2>
+                    <div class="results-actions">
+                        <button class="btn btn-secondary" id="uploadAnotherBtn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="17 8 12 3 7 8"></polyline>
+                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                            </svg>
+                            Upload Another
+                        </button>
+                        <button class="btn btn-primary" id="downloadBtn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                            Download Results
+                        </button>
+                    </div>
+                </div>
+
+                <div class="results-grid">
+                    <!-- Image Preview -->
+                    <div class="result-panel">
+                        <div class="panel-header">
+                            <h3>Original Image</h3>
+                            <span class="confidence-badge" id="confidenceBadge">-</span>
+                        </div>
+                        <div class="image-preview-container">
+                            <img id="previewImage" src="" alt="Preview" class="preview-image">
+                        </div>
+                        <div class="image-info">
+                            <div class="info-item">
+                                <span class="info-label">Size:</span>
+                                <span id="imageSize">-</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Processing Time:</span>
+                                <span id="processingTime">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Extracted Text -->
+                    <div class="result-panel">
+                        <div class="panel-header">
+                            <h3>Extracted Q&A Pairs</h3>
+                            <button class="icon-btn" id="copyTextBtn" title="Copy to clipboard">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="qa-results" id="qaResults">
+                            <!-- Q&A pairs will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabs for different views -->
+                <div class="view-tabs">
+                    <button class="view-tab active" data-view="qa">Q&A View</button>
+                    <button class="view-tab" data-view="raw">Raw Text</button>
+                    <button class="view-tab" data-view="json">JSON Export</button>
+                </div>
+
+                <div class="view-content">
+                    <!-- Q&A View -->
+                    <div id="qaView" class="view-panel active">
+                        <div id="qaList" class="qa-list">
+                            <!-- Q&A items inserted by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Raw Text View -->
+                    <div id="rawView" class="view-panel">
+                        <div class="code-block">
+                            <pre id="rawText"></pre>
+                        </div>
+                    </div>
+
+                    <!-- JSON View -->
+                    <div id="jsonView" class="view-panel">
+                        <div class="code-block">
+                            <pre id="jsonOutput"></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>Powered by Tesseract.js OCR Engine | Built with ❤️ using Classical ML |
+                <a href="https://github.com/Abhigyan-Shekhar/ocr-qa-segmentation" target="_blank">View on GitHub</a>
+            </p>
+        </div>
+    </footer>
+
+    <script src="ocr-app.js"></script>
+</body>
+
+</html>

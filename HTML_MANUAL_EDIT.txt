@@ -1,0 +1,33 @@
+Add this HTML code manually to docs/index.html
+
+Find this line (around line 77):
+```
+                </div>
+            </section>
+```
+
+Replace it with:
+```
+                </div>
+
+                <!-- Handwriting Info Box -->
+                <div class="info-box handwriting-notice">
+                    <div class="info-icon">📝</div>
+                    <div class="info-content">
+                        <h3>For Handwritten Text Recognition</h3>
+                        <p>This web app works best for <strong>typed text and screenshots</strong> (uses Tesseract.js).</p>
+                        <p>For <strong>handwritten text on blank paper</strong>, use our advanced TrOCR notebook with line removal preprocessing:</p>
+                        <a href="https://github.com/Abhigyan-Shekhar/ocr-qa-segmentation/blob/ocr-exploration/notebooks/htr_trocr_colab.ipynb" 
+                           class="btn btn-colab" target="_blank" rel="noopener">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"></path>
+                            </svg>
+                            Open TrOCR Handwriting Notebook (GitHub)
+                        </a>
+                        <p class="info-note">⚡ Works on blank paper | ⚠️ Ruled lines may reduce accuracy</p>
+                    </div>
+                </div>
+            </section>
+```
+
+The CSS is already added! Just need to edit the HTML manually.

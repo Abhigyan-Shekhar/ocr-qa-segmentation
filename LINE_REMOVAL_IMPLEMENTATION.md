@@ -56,86 +56,8 @@ print("✅ Line removal function ready")
 Replace your existing `segment_lines` function with this updated version:
 
 ```python
-def segment_lines(image_path, min_line_height=20, remove_lines=True):
-    """
-    Segment handwritten page into text lines using horizontal projection
-    
-    Args:
-        image_path: Path to image file
-        min_line_height: Minimum height to consider as a text line
-        remove_lines: Whether to remove ruled lines (set False for blank paper)
-    """
-    # Read image
-    img = cv2.imread(image_path)
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    
-    # NEW: Remove ruled lines if enabled
-    if remove_lines:
-        print("   🔧 Removing ruled lines...")
-        gray = remove_ruled_lines(gray)
-    
-    # Denoise
-    denoised = cv2.fastNlMeansDenoising(gray, h=10)
-    
-    # Binarize
-    binary = cv2.adaptiveThreshold(
-        denoised, 255,
-        cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
-        cv2.THRESH_BINARY_INV, 21, 10
-    )
-    
-    # Horizontal projection
-    h_projection = np.sum(binary, axis=1)
-    threshold = np.max(h_projection) * 0.1
-    
-    # Find line boundaries
-    in_line = False
-    line_start = 0
-    lines = []
-    
-    for i, val in enumerate(h_projection):
-        if not in_line and val > threshold:
-            line_start = i
-            in_line = True
-        elif in_line and val < threshold:
-            line_end = i
-            if line_end - line_start > min_line_height:
-                lines.append((line_start, line_end))
-            in_line = False
-    
-    if in_line:
-        lines.append((line_start, len(h_projection)))
-    
-    # Extract line images with PIL
-    line_images = []
-    bboxes = []
-    
-    for y_start, y_end in lines:
-        # Add padding
-        y_start = max(0, y_start - 5)
-        y_end = min(gray.shape[0], y_end + 5)
-        
-        # Extract line
-        line_img = gray[y_start:y_end, :]
-        
-        # Find horizontal boundaries
-        v_projection = np.sum(binary[y_start:y_end, :], axis=0)
-        non_zero = np.where(v_projection > 0)[0]
-        
-        if len(non_zero) > 0:
-            x_start = max(0, non_zero[0] - 10)
-            x_end = min(gray.shape[1], non_zero[-1] + 10)
-            line_img = line_img[:, x_start:x_end]
-            
-            # Convert to PIL Image and RGB (TrOCR needs RGB)
-            line_pil = Image.fromarray(line_img).convert('RGB')
-            
-            line_images.append(line_pil)
-            bboxes.append((x_start, y_start, x_end - x_start, y_end - y_start))
-    
-    return line_images, bboxes
 
-print("✅ Line segmentation function ready")
+
 ```
 
 ### Step 3: Usage Examples
@@ -153,7 +75,7 @@ lines, line_bboxes = segment_lines(img_filename, remove_lines=False)
 **Auto-detect (default is True):**
 ```python
 lines, line_bboxes = segment_lines(img_filename)  # Line removal ON by default
-```
+``
 
 ---
 
